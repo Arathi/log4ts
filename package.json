@@ -1,0 +1,17 @@
+{
+  "name": "log4ts",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "module": "dist/log4ts.js",
+  "main": "dist/log4ts.cjs",
+  "types": "dist/types",
+  "scripts": {
+    "build": "vite build && tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  }
+}
