@@ -1,11 +1,12 @@
 {
   "name": "log4ts",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "module": "dist/log4ts.js",
   "main": "dist/log4ts.cjs",
   "types": "dist/types",
+  "author": "Arathi of Nebnizilla <ssdfa7@gmail.com> (https://blog.undsf.com)",
   "scripts": {
     "build": "vite build && tsc"
   },
