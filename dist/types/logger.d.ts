@@ -1,13 +1,20 @@
 export declare enum LogLevel {
-    Debug = "DEBUG",
-    Info = "INFO",
-    Warning = "WARN",
-    Error = "ERROR"
+    All = 0,
+    Debug = 1,
+    Info = 2,
+    Warning = 3,
+    Error = 4,
+    Off = 5
+}
+export interface LoggerOptions {
+    pattern?: string;
+    level?: LogLevel;
 }
 export declare class Logger {
     name: string;
-    constructor(name?: string);
-    private get time();
+    options: LoggerOptions;
+    constructor(name?: string, options?: LoggerOptions);
+    private get level();
     private getPrefix;
     debug(...data: any[]): void;
     info(...data: any[]): void;
