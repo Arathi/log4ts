@@ -1,7 +1,7 @@
 {
   "name": "log4ts",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "module": "dist/log4ts.js",
   "main": "dist/log4ts.cjs",

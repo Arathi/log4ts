@@ -1,2 +1,2 @@
-export { Logger, LogLevel } from './logger';
+export { Logger } from './logger';
 export { LoggerFactory } from './logger-factory';

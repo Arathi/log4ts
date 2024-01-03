@@ -1,109 +1,187 @@
 var D = Object.defineProperty;
-var T = (n, e, t) => e in n ? D(n, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : n[e] = t;
-var c = (n, e, t) => (T(n, typeof e != "symbol" ? e + "" : e, t), t);
-function p(n, e, t = " ", s) {
-  if (e == 0)
-    return n;
-  const r = Math.abs(e);
-  if (n.length == r)
-    return n;
-  let o = e > 0 ? 1 : 0;
-  if (s != null && (o = s), n.length > r) {
-    const f = n.substring(0, e - 6), g = n.substring(n.length - 3);
-    return `${f}...${g}`;
-  }
-  if (o == 0)
-    return n.padStart(r, t);
-  if (o == 1)
-    return n.padEnd(r, t);
-  const i = r - n.length, l = n.length + Math.ceil(i / 2);
-  return n.padStart(l, t).padEnd(r, t);
-}
-function m(n = "Y-M-D H:m:s.S", e = /* @__PURE__ */ new Date()) {
-  let t = n;
-  const s = `${e.getFullYear()}`.padStart(4, "0"), r = `${e.getMonth() + 1}`.padStart(2, "0"), o = `${e.getDay()}`.padStart(2, "0"), i = `${e.getHours()}`.padStart(2, "0"), l = `${e.getMinutes()}`.padStart(2, "0"), f = `${e.getSeconds()}`.padStart(2, "0"), g = `${e.getMilliseconds()}`.padStart(3, "0");
-  return t = t.replace("Y", s), t = t.replace("M", r), t = t.replace("D", o), t = t.replace("H", i), t = t.replace("m", l), t = t.replace("s", f), t = t.replace("S", g), t;
-}
-var S = /* @__PURE__ */ ((n) => (n[n.All = 0] = "All", n[n.Debug = 1] = "Debug", n[n.Info = 2] = "Info", n[n.Warning = 3] = "Warning", n[n.Error = 4] = "Error", n[n.Off = 5] = "Off", n))(S || {});
-const N = [
+var Y = (s, e, t) => e in s ? D(s, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : s[e] = t;
+var i = (s, e, t) => (Y(s, typeof e != "symbol" ? e + "" : e, t), t);
+var c = /* @__PURE__ */ ((s) => (s[s.All = 0] = "All", s[s.Debug = 1] = "Debug", s[s.Info = 2] = "Info", s[s.Warning = 3] = "Warning", s[s.Error = 4] = "Error", s[s.Off = 5] = "Off", s))(c || {});
+const $ = [
   "ALL",
   "DEBUG",
   "INFO",
   "WARN",
   "ERROR",
   "OFF"
-], M = "ROOT", O = "Y-M-D H:m:s.S", A = "%D{Y-M-D H:m:s.S} {%N} [%-5L] ", x = 0, u = /%D(\{(.*?)})?/, h = /%([+-]?\d+)?N/, d = /%([+-]?\d+)?L/, b = {
-  pattern: A,
-  level: x
-};
-class R {
-  constructor(e = M, t = {}) {
-    c(this, "name");
-    c(this, "options");
-    this.name = e, this.options = Object.assign(b, t);
+];
+class b {
+  constructor(e, t = []) {
+    i(this, "layout");
+    i(this, "filters");
+    this.layout = e, this.filters = t;
   }
-  get level() {
-    return this.options.level ?? 0;
-  }
-  getPrefix(e) {
-    let t = this.options.pattern ?? A, s = u.exec(t);
-    if (s != null) {
-      let r = s[2];
-      r == null && (r = O);
-      const o = m(r);
-      t = t.replace(u, o);
-    }
-    if (s = h.exec(t), s != null) {
-      let r = s[1], o = 0;
-      r != null && (o = Number(r));
-      const i = p(this.name, o);
-      t = t.replace(h, i);
-    }
-    if (s = d.exec(t), s != null) {
-      let r = s[1], o = 0;
-      r != null && (o = Number(r));
-      let i = N[e];
-      i = p(i, o), t = t.replace(d, i);
-    }
-    return t;
-  }
-  debug(...e) {
-    this.level <= 1 && console.debug(this.getPrefix(
-      1
-      /* Debug */
-    ), ...e);
-  }
-  info(...e) {
-    this.level <= 2 && console.info(this.getPrefix(
-      2
-      /* Info */
-    ), ...e);
-  }
-  warn(...e) {
-    this.level <= 3 && console.warn(this.getPrefix(
-      3
-      /* Warning */
-    ), ...e);
-  }
-  error(...e) {
-    this.level <= 4 && console.error(this.getPrefix(
-      4
-      /* Error */
-    ), ...e);
+  append(e, t) {
+    const r = this.layout.render(e);
+    let n = !0;
+    for (const o of this.filters)
+      if (n = o.filter(e, t), !n)
+        break;
+    if (n)
+      switch (e.level) {
+        case c.Debug:
+          console.debug(...r);
+          break;
+        case c.Info:
+          console.info(...r);
+          break;
+        case c.Warning:
+          console.warn(...r);
+          break;
+        case c.Error:
+          console.error(...r);
+          break;
+      }
   }
 }
-const a = class a {
+const g = "YYYY-MM-DDTHH:mm:ss.SSS";
+class w {
+  constructor(e = g) {
+    i(this, "pattern");
+    this.pattern = e;
+  }
+  format(e = /* @__PURE__ */ new Date()) {
+    let t = this.pattern + "";
+    return t = t.replace("YYYY", this.formatYear(e, 4)), t = t.replace("YY", this.formatYear(e, 2)), t = t.replace("Y", this.formatYear(e)), t = t.replace("MM", this.formatMonth(e, 2)), t = t.replace("M", this.formatMonth(e)), t = t.replace("DD", this.formatDay(e, 2)), t = t.replace("D", this.formatDay(e)), t = t.replace("HH", this.formatHour(e, 2)), t = t.replace("H", this.formatHour(e)), t = t.replace("mm", this.formatMinute(e, 2)), t = t.replace("m", this.formatMinute(e)), t = t.replace("ss", this.formatSecond(e, 2)), t = t.replace("s", this.formatSecond(e)), t = t.replace("SSS", this.formatMillisecond(e, 3)), t = t.replace("SS", this.formatMillisecond(e, 2)), t = t.replace("S", this.formatMillisecond(e, 1)), t;
+  }
+  formatYear(e, t = 0) {
+    const r = e.getFullYear(), n = r % 100;
+    switch (t) {
+      case 4:
+        return `${r}`.padStart(4, "0");
+      case 2:
+        return `${n}`.padStart(2, "0");
+    }
+    return `${r}`;
+  }
+  formatMonth(e, t = 0) {
+    const r = e.getMonth() + 1;
+    return t == 2 ? `${r}`.padStart(2, "0") : `${r}`;
+  }
+  formatDay(e, t = 0) {
+    const r = e.getDay();
+    return t == 2 ? `${r}`.padStart(2, "0") : `${r}`;
+  }
+  formatHour(e, t = 0) {
+    const r = e.getHours();
+    return t == 2 ? `${r}`.padStart(2, "0") : `${r}`;
+  }
+  formatMinute(e, t = 0) {
+    const r = e.getMinutes();
+    return t == 2 ? `${r}`.padStart(2, "0") : `${r}`;
+  }
+  formatSecond(e, t = 0) {
+    const r = e.getSeconds();
+    return t == 2 ? `${r}`.padStart(2, "0") : `${r}`;
+  }
+  formatMillisecond(e, t = 0) {
+    const r = e.getMilliseconds(), n = Math.floor(r / 10), o = Math.floor(r / 100);
+    switch (t) {
+      case 3:
+        return `${r}`.padStart(3, "0");
+      case 2:
+        return `${n}`.padStart(2, "0");
+      case 1:
+        return `${o}`;
+    }
+    return "0";
+  }
+}
+const A = "%d{YYYY-MM-DD HH:mm:ss.SSS} [%-5l] {%24n} ", u = /%d(\{(.*?)})?/, m = /%([+-]?\d+)?l/, d = /%([+-]?\d+)?n/;
+class H {
+  constructor(e = A) {
+    i(this, "pattern");
+    this.pattern = e;
+  }
+  renderPrefix(e, t, r) {
+    let n = this.pattern + "", o = u.exec(n);
+    if (o != null) {
+      const a = o[2] ?? g, l = new w(a).format(e);
+      n = n.replace(u, l);
+    }
+    if (o = m.exec(n), o != null) {
+      let a = $[t];
+      const h = o[1] ?? "0", l = Number(h), f = Math.abs(l);
+      l > 0 ? a = a.padEnd(f, " ") : l < 0 && (a = a.padStart(f, " ")), n = n.replace(m, a);
+    }
+    if (o = d.exec(n), o != null) {
+      let a = r;
+      const h = o[1] ?? "0", l = Number(h), f = Math.abs(l);
+      if (f > a.length)
+        l > 0 ? a = a.padEnd(f, "") : l < 0 && (a = a.padStart(f, " "));
+      else if (f < a.length) {
+        const M = a.substring(0, f - 3 - 3), E = a.substring(a.length - 3);
+        a = `${M}...${E}`;
+      }
+      n = n.replace(d, a);
+    }
+    return n;
+  }
+  render(e) {
+    const t = [];
+    return t.push(this.renderPrefix(e.time, e.level, e.name)), t.push(...e.message), t;
+  }
+}
+const N = new H();
+class y {
+  constructor() {
+  }
+  filter(e, t) {
+    return e.level >= t.level;
+  }
+}
+const O = new y(), R = new b(
+  N,
+  [
+    O
+  ]
+), T = "ROOT", F = c.Info;
+class x {
+  constructor(e = T, t = {}) {
+    i(this, "name");
+    i(this, "level", F);
+    i(this, "appenders", []);
+    this.name = e, t.level != null && (this.level = t.level), t.appenders != null && (this.appenders = t.appenders), this.appenders.length == 0 && this.appenders.push(R);
+  }
+  debug(...e) {
+    this.append(c.Debug, ...e);
+  }
+  info(...e) {
+    this.append(c.Info, ...e);
+  }
+  warn(...e) {
+    this.append(c.Warning, ...e);
+  }
+  error(...e) {
+    this.append(c.Error, ...e);
+  }
+  append(e, ...t) {
+    const r = {
+      time: /* @__PURE__ */ new Date(),
+      level: e,
+      name: this.name,
+      message: t
+    };
+    for (const n of this.appenders)
+      n.append(r, this);
+  }
+}
+const p = class p {
   static getLogger(e) {
-    if (a.loggers.has(e))
-      return a.loggers.get(e);
-    const t = new R(e);
-    return a.loggers.set(e, t), t;
+    if (p.loggers.has(e))
+      return p.loggers.get(e);
+    const t = new x(e);
+    return p.loggers.set(e, t), t;
   }
 };
-c(a, "loggers", /* @__PURE__ */ new Map());
-let E = a;
+i(p, "loggers", /* @__PURE__ */ new Map());
+let S = p;
 export {
-  S as LogLevel,
-  R as Logger,
-  E as LoggerFactory
+  x as Logger,
+  S as LoggerFactory
 };
